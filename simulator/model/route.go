@@ -15,7 +15,7 @@ type Route struct {
 	Positions []Position `json:"positions"`
 }
 
-func NewModel() *Route {
+func NewRoute() *Route {
 	return &Route{}
 }
 

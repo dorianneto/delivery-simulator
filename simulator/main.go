@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	ckafka "github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/dorianneto/delivery-simulator/simulator/infra/kafka"
-	"github.com/dorianneto/delivery-simulator/simulator/model"
+	akafka "github.com/dorianneto/delivery-simulator/simulator/application/kafka"
+	"github.com/dorianneto/delivery-simulator/simulator/application/usecase"
+	ikafka "github.com/dorianneto/delivery-simulator/simulator/infra/kafka"
 	"github.com/joho/godotenv"
 )
 
@@ -17,27 +17,23 @@ func init() {
 	}
 }
 
+// Input:
+// {"clientId":"1","routeId":"1"}
+// {"clientId":"2","routeId":"2"}
+// {"clientId":"3","routeId":"3"}
+
 func main() {
-	route := model.NewModel()
-	route.ID = "1"
-	route.ClientID = "1"
-
-	route.LoadDestination()
-
-	// parser := usecase.NewParser()
-	// data, err := parser.ToString(route)
-
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
-
 	message := make(chan *ckafka.Message)
-	consumer := kafka.NewKafkcaConsumer(message)
+
+	parser := usecase.NewParser()
+	consumer := ikafka.NewConsumer(message)
+	producer := ikafka.NewProducer()
 
 	go consumer.Consume()
 
+	produce := akafka.NewProduce(producer, parser)
+
 	for m := range message {
-		fmt.Println(string(m.Value))
+		go produce.Produce(m)
 	}
 }

@@ -11,7 +11,7 @@ type KafkaConsumer struct {
 	Message chan *ckafka.Message
 }
 
-func NewKafkcaConsumer(message chan *ckafka.Message) *KafkaConsumer {
+func NewConsumer(message chan *ckafka.Message) *KafkaConsumer {
 	return &KafkaConsumer{Message: message}
 }
 
