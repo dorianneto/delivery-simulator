@@ -11,7 +11,7 @@ import (
 
 type Route struct {
 	ID        string     `json:"routeId"`
-	ClientId  string     `json:"clientId"`
+	ClientID  string     `json:"clientId"`
 	Positions []Position `json:"positions"`
 }
 
@@ -19,12 +19,12 @@ func NewModel() *Route {
 	return &Route{}
 }
 
-func (route *Route) LoadDestination() error {
-	if route.ID == "" {
+func (r *Route) LoadDestination() error {
+	if r.ID == "" {
 		return errors.New("couldn't find the destination for this route")
 	}
 
-	file, err := os.Open("destinations/" + route.ID + ".txt")
+	file, err := os.Open("destinations/" + r.ID + ".txt")
 	if err != nil {
 		return err
 	}
@@ -47,7 +47,7 @@ func (route *Route) LoadDestination() error {
 			return nil
 		}
 
-		route.Positions = append(route.Positions, Position{Lat: lat, Long: long})
+		r.Positions = append(r.Positions, Position{Lat: lat, Long: long})
 	}
 
 	return nil
