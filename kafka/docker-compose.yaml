@@ -36,3 +36,17 @@ services:
         "sleep 5s &&
         kafka-topics --create --topic=route.new-direction --if-not-exists --bootstrap-server=kafka:9092 &&
         kafka-topics --create --topic=route.new-position --if-not-exists --bootstrap-server=kafka:9092"
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:6.0.1
+    hostname: control-center
+    depends_on:
+      - kafka
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      PORT: 9021
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
