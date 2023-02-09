@@ -1,7 +1,7 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Document } from 'mongoose';
 
-export type RouteDocument = HydratedDocument<Route>;
+export type RouteDocument = Route & Document;
 
 @Schema()
 export class Route {

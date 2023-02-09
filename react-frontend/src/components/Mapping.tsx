@@ -15,7 +15,7 @@ import { sample, shuffle } from "lodash";
 import { RouteExistsError } from "../errors/route-exists.error";
 import { useSnackbar } from "notistack";
 import { Navbar } from "./Navbar";
-import io, { Socket } from "socket.io-client";
+import io from "socket.io-client";
 
 const API_URL = process.env.REACT_APP_API_URL as string;
 
@@ -57,7 +57,7 @@ export const Mapping: FunctionComponent = () => {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [routeIdSelected, setRouteIdSelected] = useState<string>("");
   const mapRef = useRef<Map>();
-  const socketIORef = useRef<typeof Socket>();
+  const socketIORef = useRef<SocketIOClient.Socket>();
   const { enqueueSnackbar } = useSnackbar();
 
   const finishRoute = useCallback(

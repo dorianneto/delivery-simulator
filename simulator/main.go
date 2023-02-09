@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	ckafka "github.com/confluentinc/confluent-kafka-go/kafka"
@@ -34,6 +35,7 @@ func main() {
 	produce := akafka.NewProduce(producer, parser)
 
 	for m := range message {
+		fmt.Println(string(m.Value))
 		go produce.Produce(m)
 	}
 }

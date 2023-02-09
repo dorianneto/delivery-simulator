@@ -1,15 +1,15 @@
-import { Controller, Get, Inject, OnModuleInit, Param } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
-import { Producer } from '@nestjs/microservices/external/kafka.interface';
+import { Controller, Get, Inject } from '@nestjs/common';
+import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 import { RoutesService } from './routes.service';
+import { RoutesGateway } from './routes.gateway';
 
 @Controller('routes')
-export class RoutesController implements OnModuleInit {
-  private kafkaProducer: Producer;
-
+export class RoutesController {
   constructor(
     private readonly routesService: RoutesService,
-    @Inject('KAFKA_SERVICE') private readonly clientKafka: ClientKafka,
+    @Inject('KAFKA_SERVICE')
+    private clientKafka: ClientKafka,
+    private routeGateway: RoutesGateway,
   ) {}
 
   @Get()
@@ -17,21 +17,18 @@ export class RoutesController implements OnModuleInit {
     return this.routesService.findAll();
   }
 
-  async onModuleInit() {
-    this.kafkaProducer = await this.clientKafka.connect();
-  }
-
-  @Get(':id/start')
-  start(@Param('id') id: string) {
-    console.log('sending to kafka...');
-    this.kafkaProducer.send({
-      topic: 'route.new-direction',
-      messages: [
-        {
-          key: 'route.new-direction',
-          value: JSON.stringify({ routeId: id, clientId: '' }),
-        },
-      ],
-    });
+  @MessagePattern('route.new-position')
+  consumeNewPosition(
+    @Payload()
+    message: {
+      value: {
+        routeId: string;
+        clientId: string;
+        position: [number, number];
+        finished: boolean;
+      };
+    },
+  ) {
+    this.routeGateway.sendPosition(message.value);
   }
 }

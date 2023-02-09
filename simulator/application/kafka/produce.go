@@ -37,6 +37,7 @@ func (p *Produce) Produce(message *ckafka.Message) {
 
 	for _, position := range positions {
 		err := p.Producer.Publish(position, os.Getenv("KafkaProduceTopic"))
+		log.Println(position)
 		time.Sleep(time.Millisecond * 500)
 		if err != nil {
 			log.Println(err.Error())
