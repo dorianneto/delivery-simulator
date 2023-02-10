@@ -35,13 +35,13 @@ func (r *Route) LoadDestination() error {
 	for scanner.Scan() {
 		line := strings.Split(scanner.Text(), ",")
 
-		lat, err := strconv.ParseFloat(line[0], 64)
+		lat, err := strconv.ParseFloat(line[1], 64)
 		if err != nil {
 			log.Println("couldn't convert lat")
 			return nil
 		}
 
-		long, err := strconv.ParseFloat(line[1], 64)
+		long, err := strconv.ParseFloat(line[0], 64)
 		if err != nil {
 			log.Println("couldn't convert long")
 			return nil
